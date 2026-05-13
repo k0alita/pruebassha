@@ -1,25 +1,18 @@
 package models;
 
 public class Usuario {
-    private int id;
-    private String username;
-    private String password;
+    private String usuario;
+    private String contraseña;
 
-    public Usuario() {
+    public Usuario(String usuario, String contraseña) {
+        this.usuario = usuario;
+        this.contraseña = contraseña;
     }
 
-    public Usuario(int id, String username, String password) {
-        this.id = id;
-        this.username = username;
-        this.password = password;
-    }
+    // El TableView NECESITA estos getters para funcionar
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
 
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getUsername() { return username; }
-    public void setUsername(String username) { this.username = username; }
-
-    public String getPassword() { return password; }
-    public void setPassword(String password) { this.password = password; }
+    public String getContraseña() { return contraseña; }
+    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
 }

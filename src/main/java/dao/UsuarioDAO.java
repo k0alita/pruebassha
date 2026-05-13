@@ -1,28 +1,43 @@
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import com.google.api.core.ApiFuture;
+import com.google.cloud.firestore.Firestore;
+import com.google.cloud.firestore.QueryDocumentSnapshot;
+import com.google.cloud.firestore.QuerySnapshot;
+
+import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 public class UsuarioDAO {
 
     public boolean validarLogin(String usuario, String contraseña) {
-        // Asegúrate de que tu tabla en la BD se llame 'usuarios' y tenga estas columnas
-        String sql = "SELECT * FROM empleado WHERE usuario = ? AND contraseña = ?";
+        try {
+            // Obtenemos la instancia de Firestore desde la clase adaptada anteriormente
+            Firestore db = ConexionDB.getFirestore();
 
-        try (Connection conn = ConexionDB.getConnection();
-             PreparedStatement pstmt = conn.prepareStatement(sql)) {
+            // Hacemos el equivalente al "SELECT * FROM empleado WHERE usuario = ? AND contraseña = ?"
+            // Buscamos en la colección "empleado" donde coincidan usuario y contraseña
+            ApiFuture<QuerySnapshot> query = db.collection("empleado")
+                    .whereEqualTo("usuario", usuario)
+                    .whereEqualTo("contraseña", contraseña)
+                    .get();
 
-            pstmt.setString(1, usuario);
-            pstmt.setString(2, contraseña);
+            // Bloqueamos la ejecución temporalmente hasta que la consulta termine (.get())
+            QuerySnapshot querySnapshot = query.get();
 
-            try (ResultSet rs = pstmt.executeQuery()) {
-                return rs.next(); // Retorna true si encuentra el usuario con esa clave
-            }
+            // Obtenemos los documentos resultantes
+            List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 
-        } catch (SQLException e) {
-            System.out.println("Error en login: " + e.getMessage());
+            // Si la lista de documentos no está vacía, el usuario y contraseña son correctos
+            return !documents.isEmpty();
+
+        } catch (InterruptedException | ExecutionException e) {
+            System.out.println("Error en login con Firebase: " + e.getMessage());
+            // Si hubo interrupción, se recomienda restaurar el estado de interrupción
+            Thread.currentThread().interrupt();
+            return false;
+        } catch (Exception e) {
+            System.out.println("Error inesperado en login: " + e.getMessage());
             return false;
         }
     }

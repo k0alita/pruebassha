@@ -10,7 +10,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
-import utils.SecurityUtils;
 
 import javafx.event.ActionEvent;
 import java.io.IOException;
@@ -35,9 +34,9 @@ public class LoginController {
             return;
         }
 
-        String hashedPassword = SecurityUtils.hashSHA256(password);
-
-        if (usuarioDAO.validarLogin(username, hashedPassword)) {
+        // LE PASAMOS LA CONTRASEÑA NORMAL.
+        // Tu UsuarioDAO (el que hicimos antes) ya se encarga de llamar a SecurityUtils.hashSHA256(password) por dentro.
+        if (usuarioDAO.validarLogin(username, password)) {
             // Login correcto: Cargamos el dashboard
             cargarDashboard(event, username);
         } else {
@@ -47,22 +46,18 @@ public class LoginController {
 
     private void cargarDashboard(ActionEvent event, String username) {
         try {
-            // Cargar el archivo FXML del dashboard
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dashboard.fxml"));
             Parent root = loader.load();
 
-            // Opcional: Pasar el nombre de usuario al nuevo controlador
+            // Pasar el nombre de usuario al Dashboard
             DashboardController controller = loader.getController();
             controller.setUsuario(username);
 
-            // Obtener el Stage (ventana) actual desde el evento del botón
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            // Cambiar la escena
-            Scene scene = new Scene(root, 1200, 900); // Tamaño más grande para el dashboard
+            Scene scene = new Scene(root, 1200, 900);
             stage.setTitle("Aplicación Punto Limpio - Dashboard");
             stage.setScene(scene);
-            stage.centerOnScreen(); // Centrar en la pantalla
+            stage.centerOnScreen();
 
         } catch (IOException e) {
             e.printStackTrace();

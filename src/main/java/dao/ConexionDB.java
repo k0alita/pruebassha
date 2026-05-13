@@ -1,33 +1,45 @@
 package dao;
 
+import com.google.auth.oauth2.GoogleCredentials;
+import com.google.cloud.firestore.Firestore;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.google.firebase.cloud.FirestoreClient;
+
 import java.io.InputStream;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.util.Properties;
 
 public class ConexionDB {
 
-    public static Connection getConnection() throws SQLException {
-        try {
-            Properties props = new Properties();
-            InputStream is = ConexionDB.class.getClassLoader().getResourceAsStream("config.properties");
+    private static Firestore firestore = null;
 
-            if (is == null) {
-                throw new RuntimeException("No se encontró el archivo config.properties");
+    public static Firestore getFirestore() {
+        try {
+            // Evitamos inicializar Firebase múltiples veces en la misma ejecución
+            if (firestore == null) {
+                InputStream is = ConexionDB.class.getClassLoader().getResourceAsStream("firebase-service-account.json");
+
+                if (is == null) {
+                    throw new RuntimeException("No se encontró el archivo firebase-service-account.json");
+                }
+
+                FirebaseOptions options = FirebaseOptions.builder()
+                        .setCredentials(GoogleCredentials.fromStream(is))
+                        .setDatabaseUrl("https://tu-proyecto.firebaseio.com") // Descomenta esta línea solo si usas Realtime Database en vez de Firestore
+                        .build();
+
+                // Verificamos que no haya aplicaciones inicializadas previamente
+                if (FirebaseApp.getApps().isEmpty()) {
+                    FirebaseApp.initializeApp(options);
+                }
+
+                firestore = FirestoreClient.getFirestore();
             }
 
-            props.load(is);
-
-            String url = props.getProperty("db.url");
-            String user = props.getProperty("db.user");
-            String password = props.getProperty("db.password");
-
-            return DriverManager.getConnection(url, user, password);
+            return firestore;
 
         } catch (Exception e) {
-            System.out.println("Error de conexión: " + e.getMessage());
-            throw new SQLException("No se pudo establecer la conexión", e);
+            System.out.println("Error de conexión a Firebase: " + e.getMessage());
+            throw new RuntimeException("No se pudo establecer la conexión", e);
         }
     }
 }
