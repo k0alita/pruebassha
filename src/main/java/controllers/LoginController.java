@@ -1,6 +1,6 @@
 package controllers;
 
-import dao.UsuarioDAO;
+import dao.EmpleadoDAO;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -22,7 +22,7 @@ public class LoginController {
     @FXML
     private PasswordField txtPassword;
 
-    private UsuarioDAO usuarioDAO = new UsuarioDAO();
+    private EmpleadoDAO usuarioDAO = new EmpleadoDAO();
 
     @FXML
     public void onLoginClick(ActionEvent event) {

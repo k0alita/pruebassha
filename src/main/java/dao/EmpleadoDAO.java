@@ -7,21 +7,23 @@ import com.google.cloud.firestore.QuerySnapshot;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import utils.SecurityUtils; // Añade este import arriba
 
-public class UsuarioDAO {
+public class EmpleadoDAO {
 
     public boolean validarLogin(String usuario, String contraseña) {
         try {
             // Obtenemos la instancia de Firestore desde la clase adaptada anteriormente
             Firestore db = ConexionDB.getFirestore();
 
+            String contraseñaHasheada = SecurityUtils.hashSHA256(contraseña);
+
             // Hacemos el equivalente al "SELECT * FROM empleado WHERE usuario = ? AND contraseña = ?"
             // Buscamos en la colección "empleado" donde coincidan usuario y contraseña
             ApiFuture<QuerySnapshot> query = db.collection("empleado")
                     .whereEqualTo("usuario", usuario)
-                    .whereEqualTo("contraseña", contraseña)
+                    .whereEqualTo("contraseña", contraseñaHasheada) // ← usamos el hash
                     .get();
-
             // Bloqueamos la ejecución temporalmente hasta que la consulta termine (.get())
             QuerySnapshot querySnapshot = query.get();
 

@@ -15,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
+import models.Empleado;
 import models.Usuario;
 
 import java.util.List;
@@ -27,17 +28,20 @@ public class UsuariosController {
     @FXML
     private TableView<Usuario> tablaUsuarios;
     @FXML
-    private TableColumn<Usuario, String> colUsuario;
+    private TableColumn<Usuario, String> colNombre;
     @FXML
-    private TableColumn<Usuario, String> colContrasena;
+    private TableColumn<Usuario, String> colApellido;
+    @FXML
+    private TableColumn<Usuario, String> colDni;
 
     private String username;
 
     @FXML
     public void initialize() {
         // 1. Configuramos las columnas
-        colUsuario.setCellValueFactory(new PropertyValueFactory<>("usuario"));
-        colContrasena.setCellValueFactory(new PropertyValueFactory<>("contraseña"));
+        colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        colApellido.setCellValueFactory(new PropertyValueFactory<>("apellido"));
+        colDni.setCellValueFactory(new PropertyValueFactory<>("dni"));
 
         // 2. Cargamos los datos automáticamente en cuanto se dibuja la pantalla
         cargarDatosDeFirestore();
@@ -45,23 +49,27 @@ public class UsuariosController {
 
     public void setUsuario(String username) {
         this.username = username;
-        lblWelcome.setText("Gestión de Usuarios - Sesión de: " + username);
+        // ✅ Evita el NullPointerException si el label no existe en el FXML
+        if (lblWelcome != null) {
+            lblWelcome.setText("Gestión de Usuarios - Sesión de: " + username);
+        }
     }
 
     private void cargarDatosDeFirestore() {
         new Thread(() -> {
             try {
                 Firestore db = ConexionDB.getFirestore();
-                ApiFuture<QuerySnapshot> query = db.collection("empleado").get();
+                ApiFuture<QuerySnapshot> query = db.collection("usuarios").get();
                 QuerySnapshot querySnapshot = query.get();
                 List<QueryDocumentSnapshot> documents = querySnapshot.getDocuments();
 
                 ObservableList<Usuario> listaUsuarios = FXCollections.observableArrayList();
 
                 for (QueryDocumentSnapshot document : documents) {
-                    String user = document.getString("usuario");
-                    String pass = document.getString("contraseña");
-                    listaUsuarios.add(new Usuario(user, pass));
+                    String nombre = document.getString("nombre");
+                    String apellido = document.getString("apellido");
+                    String dni = document.getString("dni");
+                    listaUsuarios.add(new Usuario(nombre, apellido, dni));
                 }
 
                 Platform.runLater(() -> tablaUsuarios.setItems(listaUsuarios));

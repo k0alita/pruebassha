@@ -6,17 +6,22 @@
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.UsuariosController" prefWidth="1200" prefHeight="900">
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controllers.UsuariosController"
+            prefWidth="1200" prefHeight="900">
 
+    <!-- MENÚ LATERAL IZQUIERDO -->
     <left>
-        <VBox alignment="TOP_CENTER" spacing="15.0" style="-fx-background-color: #f4f4f4; -fx-border-color: #dddddd; -fx-border-width: 0 1 0 0;" prefWidth="250.0">
+        <VBox alignment="TOP_CENTER" spacing="15.0"
+              style="-fx-background-color: #f4f4f4; -fx-border-color: #dddddd; -fx-border-width: 0 1 0 0;"
+              prefWidth="250.0">
             <padding>
                 <Insets top="30.0" right="20.0" bottom="30.0" left="20.0" />
             </padding>
+
             <Label text="Punto Limpio">
                 <font>
                     <Font name="System Bold" size="20.0" />
@@ -25,49 +30,45 @@
                     <Insets bottom="20.0" />
                 </VBox.margin>
             </Label>
-            <!-- Botones del menú lateral -->
-            <Button mnemonicParsing="false" onAction="#onCategoria1Click" text="Cargar Usuarios" prefWidth="200" prefHeight="40"/>
-            <Button mnemonicParsing="false" onAction="#onCategoria2Click" text="Categoría 2 (Pendiente)" prefWidth="200" prefHeight="40"/>
-            <Button mnemonicParsing="false" onAction="#onCategoria3Click" text="Categoría 3 (Pendiente)" prefWidth="200" prefHeight="40"/>
+
+            <Button mnemonicParsing="false" onAction="#onCategoria1Click"
+                    text="Cargar Usuarios" prefWidth="200" prefHeight="40"/>
+            <Button mnemonicParsing="false" onAction="#onCategoria2Click"
+                    text="Categoría 2 (Pendiente)" prefWidth="200" prefHeight="40"/>
+            <Button mnemonicParsing="false" onAction="#onCategoria3Click"
+                    text="Categoría 3 (Pendiente)" prefWidth="200" prefHeight="40"/>
+
             <VBox VBox.vgrow="ALWAYS" />
         </VBox>
     </left>
 
+    <!-- ZONA CENTRAL: OCUPA TODO EL ESPACIO RESTANTE -->
     <center>
-        <StackPane fx:id="contentArea">
-            <padding>
-                <Insets top="30.0" right="30.0" bottom="30.0" left="30.0" />
-            </padding>
-            <VBox alignment="CENTER" spacing="10.0">
-                <Label fx:id="lblWelcome" text="Bienvenido al Dashboard">
-                    <font>
-                        <Font name="System Bold" size="26.0" />
-                    </font>
-                </Label>
-                <Label text="Seleccione una categoría en el menú lateral para ver los detalles." textFill="#666666" />
-            </VBox>
-        </StackPane>
-    </center>
-
-    <!-- NUEVA ZONA DERECHA: LA TABLA -->
-    <right>
-        <VBox spacing="10.0" style="-fx-background-color: white; -fx-border-color: #dddddd; -fx-border-width: 0 0 0 1;" prefWidth="400.0">
+        <VBox spacing="10.0" style="-fx-background-color: white;">
             <padding>
                 <Insets top="20.0" right="20.0" bottom="20.0" left="20.0" />
             </padding>
+
             <Label text="Tabla de Usuarios">
                 <font>
                     <Font name="System Bold" size="18.0" />
                 </font>
             </Label>
-            <TableView fx:id="tablaUsuarios" VBox.vgrow="ALWAYS">
+
+            <!-- VBox.vgrow="ALWAYS" hace que la tabla estire verticalmente también -->
+            <TableView fx:id="tablaUsuarios" VBox.vgrow="ALWAYS"
+                       maxWidth="Infinity" maxHeight="Infinity">
                 <columns>
-                    <!-- Los fx:id son para el controlador -->
-                    <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="120.0" />
-                    <TableColumn fx:id="colContrasena" text="Contraseña (Hash)" prefWidth="230.0" />
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200.0" />
+                    <TableColumn fx:id="colApellido" text="Apellido" prefWidth="600.0" />
+                    <TableColumn fx:id="colDni" text="DNI" prefWidth="600.0" />
                 </columns>
+                <!-- Hace que las columnas se distribuyan en todo el ancho disponible -->
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                </columnResizePolicy>
             </TableView>
         </VBox>
-    </right>
+    </center>
 
 </BorderPane>

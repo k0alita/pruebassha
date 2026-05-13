@@ -26,7 +26,7 @@
             </Label>
 
             <!-- Botones del menú lateral -->
-            <Button mnemonicParsing="false" onAction="#onCategoria1Click" text="Categoría 1 (Listas)" prefWidth="200" prefHeight="40"/>
+            <Button mnemonicParsing="false" onAction="#onCategoria1Click" text="Lista Usuarios" prefWidth="200" prefHeight="40"/>
             <Button mnemonicParsing="false" onAction="#onCategoria2Click" text="Categoría 2 (Pendiente)" prefWidth="200" prefHeight="40"/>
             <Button mnemonicParsing="false" onAction="#onCategoria3Click" text="Categoría 3 (Pendiente)" prefWidth="200" prefHeight="40"/>
 
