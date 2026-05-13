@@ -23,5 +23,5 @@
 
     <PasswordField fx:id="txtPassword" promptText="Contraseña" maxWidth="250" />
 
-    <Button mnemonicParsing="false" onAction="#onLoginClick" text="Entrar" prefWidth="120" />
+    <Button fx:id="btnLogin" mnemonicParsing="false" onAction="#onLoginClick" text="Entrar" prefWidth="120" />
 </VBox>
